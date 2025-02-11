@@ -8,19 +8,30 @@ Programa que permeti gestionar un registre d'estudiants amb les seves notes mitj
     Calcular la nota mitjana de cada estudiant.
     Mostrar la llista d'estudiants amb les seves dades en format llegible.
 
-    Controlar que no es puguin ficar més o menys arguments (try / catch)
+    Controlar que no es puguin ficar més o menys arguments (try / except)
 """
 
 def menu_afegir(llista_alumnat):
     continuar = 1
     while(continuar):
         valors = input ("Introdueix nom alumnat, edat, 3 notes separats per espais: ").split()
-        afegir (llista_alumnat, valors)
-        continuar = print_alumnat(llista_alumnat)
+        if len(valors) != 5:
+            print("Has d'escriure 5 valors: nom, edat i 3 notes")
+            continue
+        
+        try:
+            afegir (llista_alumnat, valors)
+            continuar = print_alumnat(llista_alumnat)
+        except Exception as e:
+            eliminar_ultim (llista_alumnat)
+            print(f"Error controlat: {e}")
 
 def afegir(alumnat, dades_alumnat):
-    alumnat.append((dades_alumnat[0], dades_alumnat[1], 
+        alumnat.append((dades_alumnat[0], dades_alumnat[1], 
                     (dades_alumnat[2], dades_alumnat[3], dades_alumnat[4])))
+
+def eliminar_ultim(alumnat):
+        alumnat.pop()
 
 def print_alumnat(alumnat):
     mitjana_ = 0

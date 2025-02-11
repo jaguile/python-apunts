@@ -10,7 +10,6 @@ import time
 3️ Gestionar múltiples descàrregues en paral·lel amb asyncio.gather().
 4️ Mostrar missatges d'inici i finalització de cada descàrrega.
 5️ Mostrar el temps total de descàrrega al final.
-6 TO-DO: afegir un sistema d'errors per si la descàrrega falla.
 """
 
 MIN_SECONDS=1
