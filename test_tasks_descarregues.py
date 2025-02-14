@@ -29,7 +29,7 @@ async def main():
     #
     temps_descarrega = [random.randrange(MIN_SECONDS, MAX_SECONDS) for _ in fitxers]
 
-    # zip és per agrupar objectes iterables. T'estalvies de fer un doble for.
+    # zip és per agrupar objectes iterables
     #
     tasques = [descarrega(nom, temps) for nom, temps in zip(fitxers, temps_descarrega)]
 
