@@ -216,6 +216,37 @@ Per executar codi al final del bloc `try`... `except` que s'ha d'executar sí o 
 
 **Un iterator** és un objecte especial a Python que permet recòrrer un **iterable** amb `next()`
 
+## Python List Comprehension
+[Tutorial amb exemples](https://python.land/deep-dives/list-comprehension)
+
+## Funcions amb nombre de valors indeterminats
+
+Fem servir `*args` o `*kwargs` i es poden combinar.
+
+### Arguments posicionals il·limitats:
+
+Hem de fer servir `*args`. Exemple:
+
+```python
+def suma(*args):
+    return sum(args)
+
+print(suma(1, 2, 3))      # 6
+print(suma(10, 20, 30, 40))  # 100
+```
+
+### Arguments per nom il·limitats
+
+Hem de fer servir `**kwargs`. Exemple:
+
+```python
+def mostrar_info(**kwargs):
+    for clau, valor in kwargs.items():
+        print(f"{clau}: {valor}")
+
+mostrar_info(nom="Anna", edat=25, ciutat="Barcelona")
+```
+
 ## Asyncio - Entrada i sortida assíncrona
 [Asyncio a Pyhon3](https://docs.python.org/3/library/asyncio.html)
 
