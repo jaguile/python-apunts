@@ -247,15 +247,142 @@ def mostrar_info(**kwargs):
 mostrar_info(nom="Anna", edat=25, ciutat="Barcelona")
 ```
 
-## Asyncio - Entrada i sortida assíncrona
+## Asyncio - Entrada i sortida assíncrona i tasques concurrents
 [Asyncio a Pyhon3](https://docs.python.org/3/library/asyncio.html)
 
-Es fa servir la sintaxi **async / await**
+Es fa servir la sintaxi **async / await**.
+
+**Assincronia**: Permet no bloquejar processos a l'espera del final d'alguna operació externa (establiment d'alguna connexió, operació d'entrada o sortida, ...).
+
+**Concurrència**: Execució de tasques en paral·lel.
 
 ## Tasks and coroutines
 [Tasks and coroutines in Python3](https://docs.python.org/3/library/asyncio-task.html#coroutine)
 
-API d'alta nivell del mòdul asyncio.
+API d'alt nivell del mòdul asyncio.
+
+### Conceptes i definicions del mòdul asyncio
+
+**Co-routines**: Funcions que poden pausar o reprendre la seva execució. Són funcions que es defineixen amb `async def` al davant i serveixen per incloure codi assíncron dins d'elles. S'executen amb la paraula `await` al davant (la funció que la crida espera a que finalitzi l'execució) o amb la funció `asyncio.run()`.
+
+**Tasques**: Són *co-routeines* que s'executen en paral·lel un cop creades. Comparteixen entre elles la CPU. Les tasques es generen amb `asyncio.create_task()`.
+
+### Funcions del mòdul asyncio
+
+* `asyncio.sleep()`
+* `asyncio.run()` - Executa l'*event loop* del programa.
+* `create_task()` - crea i executa una tasca.
+* `asyncio.taskGroup()` - permet agrupar tasques i executar-les en paral·lel. La funció o el codi que crida `taskGroup` fa un `await` implícit i espera a que s'acabin d'executar les tasques del grup abans de finalitzar.
+* `asyncio.gather()` - Similar a `taskGroup()` però anterior. Executa grup de tasques en paral·lel que passem com a arguments a la funció.
+
+### Proves
+
+**Prova 1 - No concurrència**
+
+```python
+import asyncio
+import time
+
+async def say_after(delay, what):
+    await asyncio.sleep(delay)
+    print(what)
+
+async def main():
+
+    print(f"started at {time.strftime('%X')}")
+
+    await say_after(1, 'hello')
+    await say_after(2, 'world')
+
+    print(f"finished at {time.strftime('%X')}")
+
+asyncio.run(main())
+```
+
+En aquest exemple, no hi ha concurrència, per lo que la sortida és:
+
+```bash
+(.venv) joan@super-ThinkBook-14-G4-IAP:~/src/python-apunts$ python3 test_tasks.py 
+started at 14:37:31
+hello 
+world 
+finished at 14:37:34
+```
+
+**Prova 2 - Concurrència però el codi que les crida no s'espera a que les tasques finalitzin**
+
+Modifiquem el `main`:
+
+```python
+async def main():
+
+    task1 = asyncio.create_task(
+        say_after(1, 'hello'))
+
+    task2 = asyncio.create_task(
+        say_after(2, 'world'))
+
+    print(f"started at {time.strftime('%X')}")
+
+    print(f"finished at {time.strftime('%X')}")
+```
+
+Sortida:
+
+```bash
+$ python3 test_tasks.py 
+started at 14:42:31
+finished at 14:42:31
+```
+
+**Prova 3 - Concurrència i codi principal espera a les dues tasques**
+
+```python
+async def main():
+
+    task1 = asyncio.create_task(
+        say_after(1, 'hello'))
+
+    task2 = asyncio.create_task(
+        say_after(2, 'world'))
+
+    print(f"started at {time.strftime('%X')}")
+
+    # Wait until both tasks are completed (should take
+    # around 2 seconds.)
+    await task1
+    await task2
+
+    print(f"finished at {time.strftime('%X')}")
+```
+
+```bash
+$ python3 test_tasks.py 
+started at 14:43:35
+hello
+world
+finished at 14:43:37
+```
+
+Que seria equivalent, en aquest exemple, a posar només la línea `await task2`.
+
+**Prova 4 - equivalent a 3 però agrupant les tasques**
+
+```python
+async def main():
+    async with asyncio.TaskGroup() as tg:
+        task1 = tg.create_task(
+            say_after(1, 'hello'))
+
+        task2 = tg.create_task(
+            say_after(2, 'world'))
+
+        print(f"started at {time.strftime('%X')}")
+
+    # The await is implicit when the context manager exits.
+
+    print(f"finished at {time.strftime('%X')}")
+```
 
 ## varis
 
