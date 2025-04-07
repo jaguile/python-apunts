@@ -214,7 +214,11 @@ Per executar codi al final del bloc `try`... `except` que s'ha d'executar sí o 
 
 **Un iterable** és qualsevol objecte en Python que pot ser recurregut i que retorna elements un a un. Exemple: una llista, una tupla, un string, un diccionari, etc.
 
-**Un iterator** és un objecte especial a Python que permet recòrrer un **iterable** amb `next()`
+Amb la funció `isinstance()` podem saber si un element és iterable o no.
+
+**Un iterator** és un objecte especial a Python que permet recòrrer un **iterable** amb `next()`. Els iteradors fan referència a un element i tenen aquest mètode `next()` que permet fer referència al següent element.
+
+La funció `iter()` cridada sobre un objecte iterable ens retorna un objecte oterador. Aquest objecte o variable fa referència a l'objecte iterable i ens permet accedir als seus elements amb la funció `next()`.
 
 ## Python List Comprehension
 [Tutorial amb exemples](https://python.land/deep-dives/list-comprehension)
@@ -222,6 +226,12 @@ Per executar codi al final del bloc `try`... `except` que s'ha d'executar sí o 
 ## Funcions amb nombre de valors indeterminats
 
 Fem servir `*args` o `*kwargs` i es poden combinar.
+
+## Generadors (generators)
+
+Un generador és una funció que va retornant valors de mica en mica. Aquests valors són accessibles mitjançant un iterator. Una funció generadora no fa servir la paraula `return`, sinó `yield`.
+
+La diferència principal entre una funció generadora i una funció normal és que quan es retorna un valor amb `yield` a la funció generadora, la funció retorna el control a qui la va cridar (fins aquí igual) però aquesta funció no termina, sino que s'atura i el seu estat es guarda, permetent que la seva execució pugui continuar més endavant.
 
 ### Arguments posicionals il·limitats:
 
@@ -263,7 +273,7 @@ API d'alt nivell del mòdul asyncio.
 
 ### Conceptes i definicions del mòdul asyncio
 
-**Co-routines**: Funcions que poden pausar o reprendre la seva execució. Són funcions que es defineixen amb `async def` al davant i serveixen per incloure codi assíncron dins d'elles. S'executen amb la paraula `await` al davant (la funció que la crida espera a que finalitzi l'execució) o amb la funció `asyncio.run()`.
+**Co-routines**: Funcions que poden pausar o reprendre la seva execució. Són funcions que es defineixen amb `async def` al davant i serveixen per incloure codi assíncron dins d'elles. S'executen amb la paraula `await` al davant (la funció que la crida espera a que finalitzi l'execució) o amb la funció `asyncio.run()`, **no es poden executar directament sense fer servir await ni run()**.
 
 **Tasques**: Són *co-routeines* que s'executen en paral·lel un cop creades. Comparteixen entre elles la CPU. Les tasques es generen amb `asyncio.create_task()`.
 
@@ -383,6 +393,10 @@ async def main():
 
     print(f"finished at {time.strftime('%X')}")
 ```
+
+## Async generators
+
+[Asynchronous Generators in Python](https://superfastpython.com/asynchronous-generators-in-python/)
 
 ## varis
 
