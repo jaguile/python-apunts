@@ -231,7 +231,77 @@ Fem servir `*args` o `*kwargs` i es poden combinar.
 
 Un generador és una funció que va retornant valors de mica en mica. Aquests valors són accessibles mitjançant un iterator. Una funció generadora no fa servir la paraula `return`, sinó `yield`.
 
-La diferència principal entre una funció generadora i una funció normal és que quan es retorna un valor amb `yield` a la funció generadora, la funció retorna el control a qui la va cridar (fins aquí igual) però aquesta funció no termina, sino que s'atura i el seu estat es guarda, permetent que la seva execució pugui continuar més endavant.
+La diferència principal entre una funció generadora i una funció normal és que quan es retorna un valor amb `yield` en la funció generadora, la funció retorna el control a qui la va cridar (fins aquí igual) però aquesta funció no termina, sino que s'atura i el seu estat es guarda, permetent que la seva execució pugui continuar més endavant. Cada vegada que torna a reanudar la funció generadora, ho fa fins que troba una expressió `yield`. Formalment:
+
+```
+generator: A function which returns a generator iterator. It looks like a normal function except that it contains yield expressions for producing a series of values usable in a for-loop or that can be retrieved one at a time with the next() function.
+```
+
+O sigui, que tècnicament retorna el que es diu un *iterador generador*.
+
+Qui fa reanudar la funció generadora? És aquest *iterator generator* el que fa que la funció es reanudi. Ell és el que executa el contingut de la funció generadora cada vegada que ho necessita. 
+
+Quan es reanuda la funció? Cada vegada que es crida la funció `next()` sobre l'*iterator generator* o quan s'tera sobre el generador.
+
+Veiem un exemple:
+
+```python
+# Generador
+def generador():
+	for i in range(10):
+		yield i
+
+# creem un iterator generator
+gen = generador()
+print (gen)
+```
+
+En aquest exemple, es crea un *iterator generator* a partir de la crida de la funció generadora, la qual no s'executa, únicament reserva espai per aquest *iterator*. De moment, per tant, no retorna en sí cap valor. La sortida en aquest cas és:
+
+```bash
+$ python3 test_generators.py 
+<generator object generador at 0x7448a5720a00>
+```
+
+Si jo afegeixo 
+
+```python
+result = next(gen)
+print(result)
+```
+
+Això el que fa és que s'executi la funció fins que trobi una expressió `yield`, i, per tant, la sortida del `print(result)` és:
+
+```bash
+$ python3 test_generators.py 
+<generator object generador at 0x702557b1ca00>
+0
+```
+
+Si jo ara itero per tot l'*iterator*:
+
+```python
+# recorro iterator
+results = [print(item) for item in generador()]
+```
+
+La sortida és:
+
+```bash
+$ python3 test_generators.py 
+<generator object generador at 0x705ef50d8ac0>
+0
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+```
 
 ### Arguments posicionals il·limitats:
 
@@ -397,6 +467,32 @@ async def main():
 ## Async generators
 
 [Asynchronous Generators in Python](https://superfastpython.com/asynchronous-generators-in-python/)
+
+Un generador assíncron és una *co-routine* que fa ús de l'expressió `yield`. Retorna un *generator iterator* assíncron. Els valors retornats per l'expressió `yield` s'obtenen iterant amb una `async for loop` o amb una funció `anext()`. Cada crida a la funció `anext()` retorna un objecte *awaitable* que executarà el cos de la funció fins trobar una altra expressió `yield`.
+
+Exemples de com fer servir `anext` o `async for`:
+
+```python
+import asyncio
+
+# define an asynchronous generator
+async def async_generator():
+	for i in range(10):
+		yield i
+		
+async def main():
+    # create the iterator
+    it = async_generator()
+    result = await anext(it)
+
+    print (result)
+
+async def main_for():
+    async for result in async_generator():
+          print(result)
+
+asyncio.run(main_for())
+```
 
 ## varis
 
